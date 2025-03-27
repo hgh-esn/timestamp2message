@@ -21,7 +21,7 @@
 	<!-- Admin language -->
 	<languages folder="language">
 		<language tag="de-DE">de-DE/de-DE.plg_content_timestamp2message.ini</language>
-		<language tag="en-DE">de-GB/de-GB.plg_content_timestamp2message.sys.ini</language>
+		<language tag="de-DE">de-DE/de-DE.plg_content_timestamp2message.sys.ini</language>
 		<language tag="en-GB">en-GB/en-GB.plg_content_timestamp2message.ini</language>
 		<language tag="en-GB">en-GB/en-GB.plg_content_timestamp2message.sys.ini</language>
 	</languages>
