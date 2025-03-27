@@ -4,19 +4,21 @@
 * @package		timestamp2message
 * @copyright	Copyright (C) 2024 hgh-esn All rights reserved.
 * @license		GNU/GPL, see license ...
+*
+* new in J4
+*
 */
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Plugin\CMSPlugin;     // https://forum.joomla.de/thread/12094-woher-kennt-meine-eigene-php-datei-die-datei-mit-der-elternklasse/?postID=74539#post74539
-//use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Factory;
 
 // jimport('joomla.plugin.plugin');
 
-	$art_id = '-artikel-id-';
+//	$art_id = '-artikel-id-';
 
-// class plgContentTimestamp2message extends JPlugin   // alt
-class plgContentTimestamp2message extends CMSPlugin    // neu seit J4
+// class plgContentTimestamp2message extends JPlugin   // old
+class plgContentTimestamp2message extends CMSPlugin    // new since J4
 {
 	/**
 	 * Constructor
@@ -32,16 +34,7 @@ class plgContentTimestamp2message extends CMSPlugin    // neu seit J4
 		parent::__construct($subject, $config);
  		$this->loadLanguage();
 	}
-/*
-  function onContentPrepare($context, $article, $params, $page)
-    {
-		global $art_id;
-		echo 'onContentPrepare';
-		echo 'art_id 1=' .$art_id;
-		$art_id = $article->id;
-		echo 'art_id 2=' .$art_id;
-	}
-*/
+
 	public function onAfterDispatch()
 	{
 		$app = Factory::getApplication();
@@ -57,9 +50,9 @@ class plgContentTimestamp2message extends CMSPlugin    // neu seit J4
 				||	stristr($url,'option=com_snippets&view=items')
 				||	stristr($url,'option=com_content&view=articles')
 			)
-			
+		{	
 			$id= $_COOKIE[$cookie_name];    // get last id from qookie
-			
+		}	
 		elseif(stristr($url,'com_snippets'))
 		{
 			$id_start=strpos($url,'&id=')+4;   // Korrektur id beginnt 0...4 Stellen mehr recht
@@ -68,7 +61,6 @@ class plgContentTimestamp2message extends CMSPlugin    // neu seit J4
 
 			$this->mySetQookie($id,$cookie_name);
 		}
-			
 		elseif (stristr($url,'com_categories'))  // must be before com_content because it also contains that string
 		{
 			// echo '<div>' .'url-com_caregories=' .$url .'</div>';
@@ -104,9 +96,6 @@ class plgContentTimestamp2message extends CMSPlugin    // neu seit J4
 */
 	foreach ($messages as $k => $message)
 		{
-	//		$menu =& Jsite::getMenu(); 
-	//		echo $menu->getActive()->title;
-
 			if ($message['message'] === $app->getLanguage()->_(sprintf('JLIB_APPLICATION_SAVE_SUCCESS')))   // Item saved. ... used by RL-snippets edit
 			{
 				$msg=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [snippet_id=' .$id .']';
