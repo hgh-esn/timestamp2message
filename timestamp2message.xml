@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="1.7" type="plugin" group="content">
+	<name>plg_content_timestamp2message</name>
+	<author>Hans-Guenter Heiserholt [HGH]</author>
+	<creationDate>2024-10-22</creationDate>
+	<copyright>(C) 2024 HGH All rights reserved.</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>joomla.hgh-esn@t-online.de</authorEmail>
+	<authorUrl>hgh</authorUrl>
+	<version>0.1</version>
+	<description>PLG_CONTENT_TIMESTAMP2MESSAGE_XML_DESCRIPTION</description>
+	
+	<!-- Main Files -->
+	<files>
+		<filename plugin="timestamp2message">timestamp2message.php</filename>
+		<filename>index.html</filename>
+		<folder>language</folder>
+		<folder>assets</folder>
+	</files>
+	
+	<!-- Admin language -->
+	<languages folder="language">
+		<language tag="de-DE">de-DE/de-DE.plg_content_timestamp2message.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_content_timestamp2message.sys.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_content_timestamp2message.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_content_timestamp2message.sys.ini</language>
+	</languages>
+	
+	<!-- Plugin Config -->
+	<config>
+		<fields name="params">
+			<fieldset name="basic">	
+			</fieldset>
+		</fields>
+	</config>
+</extension>
