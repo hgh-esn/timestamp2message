@@ -19,7 +19,7 @@ use Joomla\CMS\Factory;
 
 // jimport('joomla.plugin.plugin');
 
-	$art_id = '-artikel-id-';
+//	$art_id = '-artikel-id-';
 
 // class plgContentTimestamp2message extends JPlugin   // alt
 class plgContentTimestamp2message extends CMSPlugin    // neu seit J4
@@ -38,16 +38,6 @@ class plgContentTimestamp2message extends CMSPlugin    // neu seit J4
 		parent::__construct($subject, $config);
  		$this->loadLanguage();
 	}
-/*
-  function onContentPrepare($context, $article, $params, $page)
-    {
-		global $art_id;
-		echo 'onContentPrepare';
-		echo 'art_id 1=' .$art_id;
-		$art_id = $article->id;
-		echo 'art_id 2=' .$art_id;
-	}
-*/
 	public function onAfterDispatch()
 	{
 		$app = Factory::getApplication();
@@ -85,8 +75,12 @@ class plgContentTimestamp2message extends CMSPlugin    // neu seit J4
 		elseif(stristr($url,'com_snippets'))
 		{
 			$id_start=strpos($url,'&id=')+4;   // Korrektur id beginnt 0...4 Stellen mehr recht
-	//		$id_end=strlen($url);
-			$id_end=strpos($url,'&return=');
+
+			if (strpos($url,'&return=') > 0)
+				$id_end=strpos($url,'&return=');
+			else
+				$id_end=strlen($url);
+			
 			$id='snippet_id=' .substr($url,$id_start,$id_end-$id_start);
 
 			$this->mySetQookie($id,$cookie_name);
@@ -148,12 +142,12 @@ class plgContentTimestamp2message extends CMSPlugin    // neu seit J4
 			
 				$this->mySetQookie($id,$cookie_name);
 		}
-		elseif 	(stristr($url,'.html'))
-		{
-			if (stristr($url,'view=form'))		
+//		elseif 	(stristr($url,'.html'))
+//		{
+			elseif (stristr($url,'view=form'))		
 			{
 				//	echo 'pos-form=' .strpos($url,'view=form');
-		//			https://j4-2-x.hgh-web.de/index.php/digital/decoder.html?view=form&layout=edit&a_id=2980&catid=105&return=aHR0cHM6Ly9qNC0yLXguaGdoLXdlYi5kZS9pbmRleC5waHAvZGlnaXRhbC9kZWNvZGVyL2Z1ZXItbG9rb21vdGl2ZW4vbWFlcmtsaW4vZGlnaXRhbC9jODAtNjA4MC8zNjExLWRlY29kZXIta2xhc3NlLWMtay13LXN0LWUuaHRtbA==
+				//	https://j4-2-x.hgh-web.de/index.php/digital/decoder.html?view=form&layout=edit&a_id=2980&catid=105&return=aHR0cHM6Ly9qNC0yLXguaGdoLXdlYi5kZS9pbmRleC5waHAvZGlnaXRhbC9kZWNvZGVyL2Z1ZXItbG9rb21vdGl2ZW4vbWFlcmtsaW4vZGlnaXRhbC9jODAtNjA4MC8zNjExLWRlY29kZXIta2xhc3NlLWMtay13LXN0LWUuaHRtbA==
 					
 				$id_start=strpos($url,'edit&a_id=')+10;   // Korrektur id beginnt 0...10 Stellen mehr rechts
 				if (stristr($url,'catid'))
@@ -165,17 +159,22 @@ class plgContentTimestamp2message extends CMSPlugin    // neu seit J4
 				
 				$this->mySetQookie($id,$cookie_name);
 			}
-			else
-				$id= $_COOKIE[$cookie_name];    // get last id from qookie
+	//		else
+	//			$id= $_COOKIE[$cookie_name];    // get last id from qookie
 			
 	//		setcookie($cookie_name, '', time()-3600, '/');   //  delete cookie
-		}
-		else
+	//	}
+		elseif (str_ends_with($url,'.html'))
 		{
-	// 	   	wenn der url keinen der angegebenen vorlaufenden string-anteile enthält.
-	//		kommt beim editieren eines reinen articles vor.
+	// 	   	wenn der url keinen der angegebenen string-anteile enthält.
+	//		kommt beim editieren eines reinen articles mittels Joomla vor.
 			$id= $_COOKIE[$cookie_name];    // get last id from qookie	
 		}
+	 	else
+	 	{
+	//		echo 'url-check: string not found';
+			$id= $_COOKIE[$cookie_name];    // get last id from qookie	
+	 	}
 /*
 		 	echo '<div>' .'str_start=' .$id_start .'</div>';
 		 	echo '<div>' .'str_end=' .$id_end .'</div>';
@@ -186,34 +185,33 @@ class plgContentTimestamp2message extends CMSPlugin    // neu seit J4
 	//		$menu =& Jsite::getMenu(); 
 	//		echo $menu->getActive()->title;
 
-			if ($message['message'] === $app->getLanguage()->_(sprintf('JLIB_APPLICATION_SAVE_SUCCESS')))   // Item saved. ... used by RL-snippets edit
-			{
-	//			$msg=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [snippet_id=' .$id .']';
-				$msg=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [' .$id .']';
-	 			$app->enqueueMessage($msg, 'message');
-			}
-			elseif ($message['message'] === $app->getLanguage()->_(sprintf('COM_CONTENT_SAVE_SUCCESS')))    // article saved. .. used by Jx-article edit
+			if ($message['message'] === $app->getLanguage()->_(sprintf('COM_CONTENT_SAVE_SUCCESS')))    		// article saved. .. used by Jx-article edit
 			{
 	//			$msg1=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [article_id=' .$id .']';
 				$msg1=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [' .$id .']';
 	 			$app->enqueueMessage($msg1, 'message');
 			}
-			elseif ($message['message'] === $app->getLanguage()->_(sprintf('COM_MENUS_MENU_SAVE_SUCCESS')))    // menue saved. .. used by Jx-menues edit
-			{
-	//			$msg1=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [menue_id=' .$id .']';
-				$msg1=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [' .$id .']';
-	 			$app->enqueueMessage($msg1, 'message');
-			}
-			elseif ($message['message'] === $app->getLanguage()->_(sprintf('COM_CATEGORIES_SAVE_SUCCESS'))) // category saved. .. used by Jx-category edit
+			elseif ($message['message'] === $app->getLanguage()->_(sprintf('COM_CATEGORIES_SAVE_SUCCESS'))) 	// category saved. .. used by Jx-category edit
 			{
 	//			$msg2=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [category_id=' .$id .']';
 				$msg2=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [' .$id .']';
 	 			$app->enqueueMessage($msg2, 'message');
 			}
+			elseif ($message['message'] === $app->getLanguage()->_(sprintf('COM_MENUS_MENU_SAVE_SUCCESS'))) 	// menue saved. .. used by Jx-menues edit
+			{
+	//			$msg1=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [menue_id=' .$id .']';
+				$msg1=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [' .$id .']';
+	 			$app->enqueueMessage($msg1, 'message');
+			}
+			elseif ($message['message'] === $app->getLanguage()->_(sprintf('JLIB_APPLICATION_SAVE_SUCCESS')))	// Item saved. ... used by RL-snippets edit
+			{
+	//			$msg=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [snippet_id=' .$id .']';
+				$msg=$message['message'] .'.. on ' .date(DATE_RFC822) .' / [' .$id .']';
+	 			$app->enqueueMessage($msg, 'message');
+			}
 
 			// Repopulate the message queue.
 			$app->enqueueMessage($message['message'], $message['type']);   // Einsteuern der Ursprungsmeldung			.... ohne Zeitangabe
-
 		}
 	}
 	public function mySetQookie($id, $cookie_name)
